@@ -11,6 +11,11 @@
                              "android.permission.WRITE_SYNC_SETTINGS"/>
     <uses-permission android:name=
                              "com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+
+
     <application
             android:name=".DPCApplication"
             android:allowBackup="true"
@@ -37,6 +42,13 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+
+        <service
+                android:name=".ApplicationForegroundService" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="ApplicationForegroundService" />
+            </intent-filter>
+        </service>
 
     </application>
 

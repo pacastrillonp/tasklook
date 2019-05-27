@@ -6,14 +6,18 @@ import android.app.ActivityManager.*
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import co.pacastrillonp.dcp.ApplicationForegroundService
 import co.pacastrillonp.dcp.MyDeviceAdminReceiver
 import co.pacastrillonp.dcp.R
 import co.pacastrillonp.dcp.databinding.ActivityMainBinding
@@ -30,7 +34,10 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
-    lateinit var devicePolicyManager: DevicePolicyManager
+    private lateinit var devicePolicyManager: DevicePolicyManager
+
+
+    private var serviceBound = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +54,8 @@ class MainActivity : DaggerAppCompatActivity() {
             when {
                 it -> when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 -> enableTaskLock()
-                }else -> when {
+                }
+                else -> when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> disableTaskLock()
                 }
             }
@@ -58,6 +66,14 @@ class MainActivity : DaggerAppCompatActivity() {
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+    }
+
+    override fun onStart() {
+
+        super.onStart()
+        if (!serviceBound) {
+            bindService()
+        }
     }
 
 
@@ -125,6 +141,26 @@ class MainActivity : DaggerAppCompatActivity() {
         }
     }
 
+    private fun bindService() {
+        try {
+            val intent = Intent(this, ApplicationForegroundService::class.java)
+            startService(intent)
+            bindService(intent, applicationForegroundServiceConnection, Context.BIND_AUTO_CREATE)
+            serviceBound = true
+        } catch (e: Exception) {
+            print(e)
 
+        }
+    }
+
+    private val applicationForegroundServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            serviceBound = true
+        }
+
+        override fun onServiceDisconnected(className: ComponentName) {
+            serviceBound = false
+        }
+    }
 }
 
