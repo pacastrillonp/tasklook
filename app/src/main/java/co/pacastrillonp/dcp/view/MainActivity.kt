@@ -17,14 +17,13 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import co.pacastrillonp.dcp.ApplicationForegroundService
 import co.pacastrillonp.dcp.MyDeviceAdminReceiver
-import co.pacastrillonp.dcp.R
 import co.pacastrillonp.dcp.databinding.ActivityMainBinding
 import co.pacastrillonp.dcp.di.util.viewModelProvider
 import co.pacastrillonp.dcp.viewmodel.MainActivityViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
+
 
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -45,7 +44,7 @@ class MainActivity : DaggerAppCompatActivity() {
         mainActivityViewModel = viewModelProvider(viewModelFactory)
 
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
-            this, R.layout.activity_main
+            this, co.pacastrillonp.dcp.R.layout.activity_main
         ).apply {
             viewModel = mainActivityViewModel
             lifecycleOwner = this@MainActivity
@@ -143,9 +142,12 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun bindService() {
         try {
-            val intent = Intent(this, ApplicationForegroundService::class.java)
-            startService(intent)
-            bindService(intent, applicationForegroundServiceConnection, Context.BIND_AUTO_CREATE)
+
+            val intent = Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivityForResult(intent, 0)
+//            val intent = Intent(this, ApplicationForegroundService::class.java)
+//            startService(intent)
+//            bindService(intent, applicationForegroundServiceConnection, Context.BIND_AUTO_CREATE)
             serviceBound = true
         } catch (e: Exception) {
             print(e)
