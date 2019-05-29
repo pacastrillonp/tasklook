@@ -3,8 +3,9 @@
  start in Android 4.1.1 -->
 <accessibility-service
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:accessibilityEventTypes="typeWindowStateChanged"
         android:accessibilityFeedbackType="feedbackGeneric"
         android:accessibilityFlags="flagIncludeNotImportantViews"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:notificationTimeout="100"
         tools:ignore="UnusedAttribute"/>
