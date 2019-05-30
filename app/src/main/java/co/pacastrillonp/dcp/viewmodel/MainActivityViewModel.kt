@@ -1,7 +1,6 @@
 package co.pacastrillonp.dcp.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import android.provider.Settings
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
@@ -19,6 +18,7 @@ class MainActivityViewModel @Inject constructor(private val context: Context) : 
 
     // Outputs
 
+    //region enable or disable button
     private val _canLockOutput = MediatorLiveData<Boolean>().apply {
         value = false
         addSource(_passwordTextInput) {
@@ -31,35 +31,26 @@ class MainActivityViewModel @Inject constructor(private val context: Context) : 
 
     val canLockOutput: LiveData<Boolean> get() = _canLockOutput
 
-    private val _lockOutput = MediatorLiveData<Boolean>().apply {
-        value = false
-    }
-    val lockOutput: LiveData<Boolean> get() = _lockOutput
+    //endregion
 
-
-    private val _buttonActionOutput = MediatorLiveData<String>().apply {
+    // region change text button text field
+    private val _buttonTextToShowOutput = MediatorLiveData<String>().apply {
         value = when {
-            accessibilitySettingsIsEnable() -> "LOCK"
-            else -> "UNLOCK"
+            accessibilitySettingsIsEnable() -> "UNLOCK"
+            else -> "LOCK"
 
         }
     }
-    val buttonActionOutput: LiveData<String> get() = _buttonActionOutput
+    val buttonTextToShowOutput: LiveData<String> get() = _buttonTextToShowOutput
 
+    //endregion
+
+    //region click event
+    private val _lockOutput = MediatorLiveData<Unit>()
+    val lockOutput: LiveData<Unit> get() = _lockOutput
 
     fun lockClick() {
-        accessibilityService()
-
-        when {
-            !_lockOutput.value!! -> {
-                _lockOutput.postValue(true)
-                _buttonActionOutput.postValue("UNLOCK")
-            }
-            else -> {
-                _lockOutput.postValue(false)
-                _buttonActionOutput.postValue("LOCK")
-            }
-        }
+        _lockOutput.postValue(Unit)
     }
 
 
@@ -94,15 +85,12 @@ class MainActivityViewModel @Inject constructor(private val context: Context) : 
         return false
     }
 
-    private fun accessibilityService() {
-        try {
-            val intent = Intent( Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            context.startActivity(intent)
-
-
-        } catch (e: Exception) {
-            print(e)
-
+    fun accessibilityResult() {
+        if (accessibilitySettingsIsEnable()) {
+            _buttonTextToShowOutput.postValue("UNLOCK")
+        } else {
+            _buttonTextToShowOutput.postValue("LOCK")
         }
     }
+
 }

@@ -1,11 +1,7 @@
 package co.pacastrillonp.dcp.view
 
-import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
@@ -26,8 +22,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
-
-    private var serviceBound = false
+    private val accessibilitySettingsResult: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,29 +36,30 @@ class MainActivity : DaggerAppCompatActivity() {
             lifecycleOwner = this@MainActivity
         }
         mainActivityViewModel.lockOutput.observe(this, Observer {
-            when {
-//                it -> accessibilityService()
-
-            }
+            accessibilityService()
         })
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+
     }
 
 
-
-
-    private val applicationForegroundServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            serviceBound = true
+    private fun accessibilityService() {
+        try {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivityForResult(intent, accessibilitySettingsResult)
+        } catch (e: Exception) {
+            //TODO: poner log
         }
+    }
 
-        override fun onServiceDisconnected(className: ComponentName) {
-            serviceBound = false
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == accessibilitySettingsResult) {
+            mainActivityViewModel.accessibilityResult()
         }
     }
 
 
 }
-

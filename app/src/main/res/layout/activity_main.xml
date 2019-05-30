@@ -25,16 +25,16 @@
                 android:textAlignment="center"
                 android:textColor="@color/colorAccent"
                 android:textSize="20sp"
-
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.22"
-                android:id="@+id/textView"/>
+                android:id="@+id/password_edit_text"/>
 
         <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@{viewModel.buttonActionOutput}"
-                app:layout_constraintTop_toBottomOf="@+id/textView" android:layout_marginBottom="8dp"
+                android:id="@+id/lock_button"
+                android:text="@{viewModel.buttonTextToShowOutput}"
+                app:layout_constraintTop_toBottomOf="@+id/password_edit_text" android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.151"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
