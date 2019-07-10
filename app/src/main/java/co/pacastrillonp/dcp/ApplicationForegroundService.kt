@@ -45,7 +45,7 @@ class ApplicationForegroundService : AccessibilityService() {
                 val isActivity = activityInfo != null
                 if (isActivity)
                     Log.i("CurrentActivity", componentName.flattenToShortString())
-                if (componentName.flattenToShortString() == "com.android.settings/.Settings") {
+                if (componentName.flattenToShortString().contains("com.android.settings")) {
                     val launchIntent = packageManager.getLaunchIntentForPackage("co.pacastrillonp.dcp")
                     if (launchIntent != null) {
                         startActivity(launchIntent)//null pointer check in case package name was not found

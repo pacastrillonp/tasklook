@@ -30,7 +30,6 @@ class MainActivityViewModel @Inject constructor(private val context: Context) : 
     }
 
     val canLockOutput: LiveData<Boolean> get() = _canLockOutput
-
     //endregion
 
     // region change text button text field
